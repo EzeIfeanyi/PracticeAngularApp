@@ -7,11 +7,6 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-details',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-  ],
   template: `
     <article>
     <img class="listing-photo" [src]="housingLocation?.photo"

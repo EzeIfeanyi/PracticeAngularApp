@@ -4,11 +4,6 @@ import { HomeComponent } from './home/home.component';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [
-    HomeComponent,
-    RouterModule,
-  ],
   template: `
   <main>
     <a [routerLink]="['/']">

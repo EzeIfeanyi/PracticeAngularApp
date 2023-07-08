@@ -5,11 +5,6 @@ import { HousingLocation } from '../housing-location';
 
 @Component({
   selector: 'app-housing-location',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-  ],
   template: `
     <section class="listing">
     <img class="listing-photo" [src]="housingLocation.photo" alt="Exterior photo of {{housingLocation.name}}">
