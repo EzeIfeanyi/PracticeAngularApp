@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
 import { HousingLocation } from '../housing-location';
 import { HousingService } from '../housing.service';
+
 
 @Component({
   selector: 'app-home',
@@ -21,18 +22,22 @@ import { HousingService } from '../housing.service';
   `,
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  errrMessage! : any;
   housingLocationList : HousingLocation[] | undefined;
   filteredLocationList: HousingLocation[] | undefined = [];
-  housingService : HousingService = inject(HousingService);
 
-  constructor() {
-    this.housingService.getAllHousingLocations().then((housingLocationList: HousingLocation[]) => {
-      this.housingLocationList = housingLocationList;
-      this.filteredLocationList = housingLocationList;
+  constructor(private houseService : HousingService) {}
+
+  ngOnInit(): void {
+    this.houseService.getAllHousingLocations().subscribe({
+      next : housingLocationList => {
+        this.housingLocationList = housingLocationList;
+        this.filteredLocationList = this.housingLocationList;
+      },
+      error : err => this.errrMessage = err
     });
   }
-    
 
   filterResults(text: string) {
     if (!text) {

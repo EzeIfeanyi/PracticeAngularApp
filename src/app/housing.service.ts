@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HousingLocation } from './housing-location';
+import { HttpClient } from '@angular/common/http';
+import { pipe, tap, catchError, throwError, Observable, filter } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,18 +11,35 @@ export class HousingService {
 
   url = 'http://localhost:3000/locations';
 
-  constructor() { 
+  constructor(private http : HttpClient) { 
 
    }
 
-  async getAllHousingLocations(): Promise<HousingLocation[]> {
-    const data = await fetch(this.url);
-    return await data.json() ?? [];
+  getAllHousingLocations() : Observable<HousingLocation[]> {
+    return this.http.get<HousingLocation[]>(this.url).pipe(
+      tap(data => console.log('All', JSON.stringify(data))),
+      catchError(this.handleError)
+    );
   }
   
-  async getHousingLocationById(id: number): Promise<HousingLocation | undefined> {
-    const data = await fetch(`${this.url}/${id}`);
-    return await data.json() ?? {};
+  handleError(err : HttpErrorResponse) {
+    let errMessage = '';
+
+    if (err.error instanceof ErrorEvent) {
+      errMessage = `An error occurred: ${err.error.message}`;
+    } else {
+      errMessage = `Server returned error code: ${err.status}, error message: ${err.message}`;
+    }
+    console.error(errMessage);
+    return throwError(() => errMessage);
+  }
+  
+  getHousingLocationById(id: number) : Observable<HousingLocation> {
+    return this.http.get<HousingLocation>(`${this.url}/${id}`).pipe(
+      tap(data => console.log('All', JSON.stringify(data))),
+      filter(data => data.id === id ),
+      catchError(this.handleError)
+    );
   }
 
   submitApplication(firstName: string, lastName: string, email: string) {
