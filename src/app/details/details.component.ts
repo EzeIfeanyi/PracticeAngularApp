@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HousingLocation } from '../housing-location';
 import { HousingService } from '../housing.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -40,8 +41,9 @@ import { FormControl, FormGroup } from '@angular/forms';
   `,
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   errMessage! : any;
+  subscription! : Subscription;
   housingLocation : HousingLocation | undefined;
   housingLocationId = -1;
 
@@ -55,10 +57,14 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const housingLocationId = parseInt(this.activatedRoute.snapshot.params['id'], 10);
-    this.houseService.getHousingLocationById(housingLocationId).subscribe({
+    this.subscription = this.houseService.getHousingLocationById(housingLocationId).subscribe({
       next : housingLocation => this.housingLocation = housingLocation,
       error : err => this.errMessage = err
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   submitApplication() {
